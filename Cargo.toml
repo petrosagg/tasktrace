@@ -3,12 +3,11 @@ name = "backtrace-waker"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-backtrace = "0.3"
 scoped-trace = "0.1"
 pin-project-lite = "0.2"
+futures-channel = "0.3"
+futures-core = "0.3"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt", "time"] }
