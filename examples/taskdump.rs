@@ -1,6 +1,6 @@
 #[tokio::main]
 async fn main() {
-    let (foo_fut, trace_handle) = backtrace_waker::traced(foo());
+    let (foo_fut, trace_handle) = tasktrace::traced(foo());
     tokio::spawn(foo_fut);
 
     println!("{}", trace_handle.backtrace().await.unwrap());
@@ -11,7 +11,8 @@ async fn pending() {
     std::future::poll_fn(|cx| {
         waker = Some(cx.waker().clone());
         std::task::Poll::Pending
-    }).await
+    })
+    .await
 }
 
 async fn foo() {

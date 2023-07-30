@@ -1,11 +1,11 @@
 [package]
-name = "backtrace-waker"
+name = "tasktrace"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
-description = "Efficient, logical 'backtraces' of async tasks."
-repository = "https://github.com/petrosagg/backtrace-waker"
+description = "Logical 'backtraces' of async tasks."
+repository = "https://github.com/petrosagg/tasktrace"
 categories = ["asynchronous", "development-tools::debugging"]
 
 [dependencies]

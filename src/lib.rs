@@ -5,12 +5,12 @@
 //! ## Usage
 //!
 //! To use, wrap the future you're interested in (usually the top level one) with
-//! `backtrace_waker::trace` and use the returned handle to request a backtrace at any time.
+//! `tasktrace::trace` and use the returned handle to request a backtrace at any time.
 //!
 //! ```rust
 //! #[tokio::main]
 //! async fn main() {
-//!     let (foo_fut, trace_handle) = backtrace_waker::traced(foo());
+//!     let (foo_fut, trace_handle) = tasktrace::traced(foo());
 //!     tokio::spawn(foo_fut);
 //!
 //!     println!("{}", trace_handle.backtrace().await.unwrap());
@@ -50,27 +50,27 @@
 //! This example program will print out something along the lines of:
 //!
 //! ```text
-//! ╼ <backtrace_waker::TracedTask<F> as core::future::future::Future>::poll::{{closure}} at /home/petrosagg/projects/backtrace-waker/src/lib.rs:116:50
-//!  └╼ taskdump::foo::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:18:11
-//!     └╼ taskdump::bar::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:22:5
+//! ╼ <tasktrace::TracedTask<F> as core::future::future::Future>::poll::{{closure}} at /home/petrosagg/projects/tasktrace/src/lib.rs:116:50
+//!  └╼ taskdump::foo::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:18:11
+//!     └╼ taskdump::bar::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:22:5
 //!        └╼ <tokio::future::poll_fn::PollFn<F> as core::future::future::Future>::poll at /home/petrosagg/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.29.1/src/future/poll_fn.rs:58:9
 //!           ├╼ taskdump::bar::{{closure}}::{{closure}} at /home/petrosagg/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.29.1/src/macros/join.rs:126:24
 //!           │  └╼ <tokio::future::maybe_done::MaybeDone<Fut> as core::future::future::Future>::poll at /home/petrosagg/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.29.1/src/future/maybe_done.rs:68:48
-//!           │     └╼ taskdump::fiz::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:26:15
-//!           │        └╼ taskdump::pending::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:14:8
+//!           │     └╼ taskdump::fiz::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:26:15
+//!           │        └╼ taskdump::pending::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:14:8
 //!           │           └╼ <core::future::poll_fn::PollFn<F> as core::future::future::Future>::poll at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/core/src/future/poll_fn.rs:64:9
-//!           │              └╼ taskdump::pending::{{closure}}::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:12:22
+//!           │              └╼ taskdump::pending::{{closure}}::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:12:22
 //!           │                 └╼ <core::task::wake::Waker as core::clone::Clone>::clone at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/core/src/task/wake.rs:342:29
-//!           │                    └╼ backtrace_waker::clone_raw at /home/petrosagg/projects/backtrace-waker/src/lib.rs:135:5
+//!           │                    └╼ tasktrace::clone_raw at /home/petrosagg/projects/tasktrace/src/lib.rs:135:5
 //!           └╼ taskdump::bar::{{closure}}::{{closure}} at /home/petrosagg/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.29.1/src/macros/join.rs:126:24
 //!              └╼ <tokio::future::maybe_done::MaybeDone<Fut> as core::future::future::Future>::poll at /home/petrosagg/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tokio-1.29.1/src/future/maybe_done.rs:68:48
-//!                 └╼ taskdump::buz::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:30:11
-//!                    └╼ taskdump::baz::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:34:15
-//!                       └╼ taskdump::pending::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:14:8
+//!                 └╼ taskdump::buz::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:30:11
+//!                    └╼ taskdump::baz::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:34:15
+//!                       └╼ taskdump::pending::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:14:8
 //!                          └╼ <core::future::poll_fn::PollFn<F> as core::future::future::Future>::poll at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/core/src/future/poll_fn.rs:64:9
-//!                             └╼ taskdump::pending::{{closure}}::{{closure}} at /home/petrosagg/projects/backtrace-waker/examples/taskdump.rs:12:22
+//!                             └╼ taskdump::pending::{{closure}}::{{closure}} at /home/petrosagg/projects/tasktrace/examples/taskdump.rs:12:22
 //!                                └╼ <core::task::wake::Waker as core::clone::Clone>::clone at /rustc/8ede3aae28fe6e4d52b38157d7bfe0d3bceef225/library/core/src/task/wake.rs:342:29
-//!                                   └╼ backtrace_waker::clone_raw at /home/petrosagg/projects/backtrace-waker/src/lib.rs:135:5
+//!                                   └╼ tasktrace::clone_raw at /home/petrosagg/projects/tasktrace/src/lib.rs:135:5
 //! ```
 //!
 //! ## How it works
@@ -205,7 +205,8 @@ mod tests {
         std::future::poll_fn(|cx| {
             waker = Some(cx.waker().clone());
             std::task::Poll::Pending
-        }).await
+        })
+        .await
     }
 
     async fn foo() {
