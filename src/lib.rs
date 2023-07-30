@@ -130,9 +130,9 @@ impl<F: Future> Future for TracedTask<F> {
     type Output = F::Output;
 
     fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
-        let this = self.project();
+        let mut this = self.project();
 
-        if let Poll::Ready(Some(req)) = this.req_rx.poll_next(cx) {
+        if let Poll::Ready(Some(req)) = this.req_rx.as_mut().poll_next(cx) {
             let trace_waker = TracedWaker(cx.waker());
             let raw_waker =
                 RawWaker::new(&trace_waker as *const _ as *const (), &TRACE_WAKER_VTABLE);
@@ -141,6 +141,10 @@ impl<F: Future> Future for TracedTask<F> {
             let mut traced_cx = Context::from_waker(&waker);
 
             let (result, trace) = Trace::root(|| this.fut.poll(&mut traced_cx));
+            // Drain the request queue if there are multiple requests waiting
+            while let Poll::Ready(Some(req)) = this.req_rx.as_mut().poll_next(cx) {
+                let _ = req.0.send(trace.clone());
+            }
             let _ = req.0.send(trace);
             result
         } else {
