@@ -2,6 +2,11 @@
 name = "backtrace-waker"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+readme = "README.md"
+description = "Efficient, logical 'backtraces' of async tasks."
+repository = "https://github.com/petrosagg/backtrace-waker"
+categories = ["asynchronous", "development-tools::debugging"]
 
 [dependencies]
 scoped-trace = "0.1"
@@ -10,4 +15,4 @@ futures-channel = "0.3"
 futures-core = "0.3"
 
 [dev-dependencies]
-tokio = { version = "1", features = ["macros", "rt", "time"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time"] }
